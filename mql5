@@ -1,0 +1,64 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                          Diamond Scalping Forex |
+//|                                                      forexroboteasy.com |
+//|                                                      Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+
+// Define important variables
+datetime lastTradeTime = 0;
+double lastTradePrice = 0;
+
+// Initialize the trading robot
+int OnInit()
+{
+   // Print a message to indicate the robot initialization
+   Print('Diamond Scalping Forex - Initialized');
+
+   // Return initialization result
+   return(INIT_SUCCEEDED);
+}
+
+// Handle incoming ticks
+void OnTick()
+{
+   // Check if enough time has passed since the last trade
+   if(TimeCurrent() - lastTradeTime > 5)
+   {
+      // Check if there is a price gap to exploit
+      if(Bid - lastTradePrice > 0.0005)
+      {
+         // Place a buy trade at the current market price
+         Trade.Buy(Symbol(), 0.01, 0, 0, 0, 0, 'Diamond Scalping Forex');
+
+         // Update the last trade time and price
+         lastTradeTime = TimeCurrent();
+         lastTradePrice = Bid;
+
+         // Print a message to indicate a new trade
+         Print('Diamond Scalping Forex - Buy trade placed at ', Bid);
+      }
+      else if(lastTradePrice - Ask > 0.0005)
+      {
+         // Place a sell trade at the current market price
+         Trade.Sell(Symbol(), 0.01, 0, 0, 0, 0, 'Diamond Scalping Forex');
+
+         // Update the last trade time and price
+         lastTradeTime = TimeCurrent();
+         lastTradePrice = Ask;
+
+         // Print a message to indicate a new trade
+         Print('Diamond Scalping Forex - Sell trade placed at ', Ask);
+      }
+   }
+}
+
+// Handle deinitialization
+void OnDeinit(const int reason)
+{
+   // Print a message to indicate the robot deinitialization
+   Print('Diamond Scalping Forex - Deinitialized');
+}
